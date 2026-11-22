@@ -1,0 +1,44 @@
+<idea-plugin>
+    <id>com.hiper.iacommit.ai-commit-generator</id>
+    <name>AI Commit Generator</name>
+    <vendor url="https://github.com/elihuic">hiperproductividad</vendor>
+
+    <description><![CDATA[
+        Genera mensajes de commit inteligentes automáticamente analizando los cambios del código (git diff) y extrayendo el ticket de la rama actual.
+    ]]></description>
+
+    <!-- Dependencias obligatorias: plataforma base y módulo de Git -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>Git4Idea</depends>
+
+    <resource-bundle>messages.MyMessageBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
+
+        <!-- Panel de configuración en File > Settings > Tools > AI Commit Generator -->
+        <applicationConfigurable
+                parentId="tools"
+                instance="com.hiper.iacommit.CommitGeneratorConfigurable"
+                id="com.hiper.iacommit.CommitGeneratorConfigurable"
+                displayName="AI Commit Generator"/>
+    </extensions>
+
+    <!-- Listener automático al cambiar de rama en Git -->
+    <projectListeners>
+        <listener
+                class="com.hiper.iacommit.BranchChangeListener"
+                topic="git4idea.repo.GitRepositoryChangeListener"/>
+    </projectListeners>
+
+    <!-- Acción en la barra de herramientas del panel de Commit -->
+    <actions>
+        <action id="com.hiper.iacommit.GenerateCommitAction"
+                class="com.hiper.iacommit.GenerateCommitAction"
+                text="Generar Mensaje con IA"
+                description="Genera el mensaje de commit analizando los cambios y la rama actual"
+                icon="AllIcons.Actions.IntentionBulb">
+            <add-to-group group-id="Vcs.MessageActionGroup" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>
